@@ -2,11 +2,12 @@ from flask import Flask, request, jsonify, render_template
 import os
 import google.generativeai as genai
 import json
-import picsort
-
+import picsort as picsort
+import esp32_control as esp32_control
 
 picsort.number_images()
 app = Flask(__name__)
+
 
 json_data = open("words.json", "r", encoding="utf-8")
 words = json.loads(json_data.read())
@@ -22,7 +23,7 @@ prompt = f"""
 **以下是你可以選擇的台詞:**
 {words}
 **舉例：**
-如果我的對話是 "早安"，你應該選擇「貴安」這句台詞回覆。
+如果我的對話是 "早安"，你應該選擇「貴安」或是「早安喵姆喵姆」這句台詞回覆。
 
 必要時可以選擇最有趣的台詞回覆，但請確保回覆的內容與對話內容有關，可能是諧音或是反諷等等。
 但你也需要注意，這些台詞是來自動畫中的角色，所以有些台詞可能不適合用在所有情境中。
@@ -55,7 +56,9 @@ def transcribe():
 
     response = model.generate_content(f"回覆以下句子:{transcript}")
     generated_text = response.text[:-1]
-    print({"text": int(generated_text), "pic": words[generated_text]})
+    app.logger.info(words[generated_text])
+    response = esp32_control.control_esp(int(generated_text))
+    app.logger.info(f"send {int(generated_text)} to esp32, {response=}")
     return jsonify({"text": int(generated_text), "pic": words[generated_text]})
 
 

@@ -10,7 +10,7 @@ def number_images(folder="./static/pics", output_json="words.json"):
 
     # Get all jpg files in the folder
     jpg_files = [f for f in os.listdir(folder) if f.lower().endswith(".jpg")]
-
+    jpg_files.sort()
     # assign arbitrary numbers
     numbered_images = {i + 1: file[:-4] for i, file in enumerate(jpg_files)}
 
