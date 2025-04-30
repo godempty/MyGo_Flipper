@@ -2,9 +2,7 @@
 
 ## Build & run
 
-```
-docker compose up --build
-```
+pip install -r ./requirements.txt
 
 ## requirements
 

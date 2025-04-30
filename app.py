@@ -6,16 +6,17 @@ from google import genai
 from google.genai import types
 from flask import Flask, request, jsonify, render_template
 from pydantic import BaseModel
-
+from dotenv import load_dotenv
+import os
 
 class GeminiResponse(BaseModel):
     transcribe: str
     response: str
 
-
+load_dotenv()
 picsort.number_images()
 app = Flask(__name__)
-client = genai.Client()
+client = genai.Client(api_key=os.getenv("GENAI_API_KEY"))
 
 WORDS_JSON = open("words.json", "r", encoding="utf-8")
 WORDS = json.loads(WORDS_JSON.read())
@@ -90,8 +91,6 @@ def transcribe():
     app.logger.info(f"{transcribe=}")
     app.logger.info(f"{generated_text=}")
     app.logger.info(WORDS[generated_text])
-    response = esp32_control.control_esp(int(generated_text))
-    app.logger.info(f"send {int(generated_text)} to esp32, {response=}")
     return jsonify({"text": int(generated_text), "pic": WORDS[generated_text]})
 
 
