@@ -1,6 +1,5 @@
 import json
 import picsort as picsort
-import esp32_control as esp32_control
 
 from google import genai
 from google.genai import types
@@ -16,7 +15,7 @@ class GeminiResponse(BaseModel):
 load_dotenv()
 picsort.number_images()
 app = Flask(__name__)
-client = genai.Client(api_key=os.getenv("GENAI_API_KEY"))
+client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 
 WORDS_JSON = open("words.json", "r", encoding="utf-8")
 WORDS = json.loads(WORDS_JSON.read())
