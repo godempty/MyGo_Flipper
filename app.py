@@ -1,4 +1,6 @@
 import json
+import logging
+import sys
 import picsort as picsort
 import esp32_control as esp32_control
 
@@ -14,8 +16,21 @@ class GeminiResponse(BaseModel):
 
 
 picsort.number_images()
+
 app = Flask(__name__)
 client = genai.Client()
+
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter(
+    "%(asctime)s [%(levelname)s] in %(module)s: %(message)s"
+)
+handler.setFormatter(formatter)
+
+app.logger.handlers.clear()
+app.logger.addHandler(handler)
+app.logger.setLevel(logging.INFO)
+
 
 WORDS_JSON = open("words.json", "r", encoding="utf-8")
 WORDS = json.loads(WORDS_JSON.read())
@@ -92,7 +107,7 @@ def transcribe():
     app.logger.info(WORDS[generated_text])
     response = esp32_control.control_esp(int(generated_text))
     app.logger.info(f"send {int(generated_text)} to esp32, {response=}")
-    return jsonify({"text": int(generated_text), "pic": WORDS[generated_text]})
+    return jsonify({"text": transcribe, "pic": WORDS[generated_text]})
 
 
 

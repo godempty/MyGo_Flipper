@@ -1,8 +1,11 @@
 services:
   server:
     build: .
-    container_name: server
+    container_name: mygo_flipper-server
     ports:
       - "5000:5000"
+    volumes:
+      - ./static:/app/static
+      - ./templates:/app/templates
     env_file:
       - .env

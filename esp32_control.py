@@ -8,9 +8,12 @@ ESP_API_STEP = "/step"
 
 
 def control_esp(value):
-    data = {"position": value}
-    response = requests.post(f"{ESP_API_URL}{ESP_API_POSITION}", json=data)
-    return response.json()
+    try:
+        data = {"position": value}
+        response = requests.post(f"{ESP_API_URL}{ESP_API_POSITION}", timeout=5, json=data)
+        return response.json()
+    except Exception as e:
+        return {"error" : e}
 
 
 def stepping(value):
